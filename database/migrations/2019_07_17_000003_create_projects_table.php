@@ -14,6 +14,7 @@ class CreateProjectsTable extends Migration
             $table->longText('description');
             $table->longText('objectives')->nullable();
             $table->string('visibility');
+            $table->integer('created_by');
             $table->timestamps();
             $table->softDeletes();
         });

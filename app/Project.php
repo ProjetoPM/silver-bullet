@@ -26,9 +26,15 @@ class Project extends Model
         'title',
         'objectives',
         'visibility',
+        'created_by',
         'created_at',
         'updated_at',
         'deleted_at',
         'description',
     ];
+
+    public function user()
+    {
+        return $this->belongsToMany(Project::class, 'users')->withTimestamps();
+    }
 }

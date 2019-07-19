@@ -9,6 +9,9 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Project;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class ProjectController extends Controller
 {
@@ -60,7 +63,7 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         abort_unless(\Gate::allows('project_create'), 403);
-
+        $request['created_by'] = Auth::id();
         $project = Project::create($request->all());
 
         return redirect()->route('admin.projects.index');

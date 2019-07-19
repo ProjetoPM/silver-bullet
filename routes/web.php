@@ -24,4 +24,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('projects/destroy', 'ProjectController@massDestroy')->name('projects.massDestroy');
 
     Route::resource('projects', 'ProjectController');
+
+    Route::resource('stakeholders', 'StakeholderController');
 });
