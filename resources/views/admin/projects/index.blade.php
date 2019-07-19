@@ -15,24 +15,55 @@
     </div>
 
     <div class="card-body">
-        <table class=" table table-bordered table-striped table-hover ajaxTable datatable">
-            <thead>
-                <tr>
-                    <th width="10">
+        <div class="table-responsive">
+            <table class=" table table-bordered table-striped table-hover datatable">
+                <thead>
+                    <tr>
+                        <th width="10">
 
-                    </th>
-                    <th>
-                        {{ trans('cruds.project.fields.title') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.project.fields.description') }}
-                    </th>
-                    <th>
-                        &nbsp;
-                    </th>
-                </tr>
-            </thead>
-        </table>
+                        </th>
+                        <th>
+                            {{ trans('cruds.project.fields.title') }}
+                        </th>
+                        <th>
+                            &nbsp;
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($projects as $key => $project)
+                        <tr data-entry-id="{{ $project->id }}">
+                            <td>
+
+                            </td>
+                            <td>
+                                {{ $project->title ?? '' }}
+                            </td>
+                            <td>
+                                @can('project_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.projects.show', $project->id) }}">
+                                        {{ trans('global.view') }}
+                                    </a>
+                                @endcan
+                                @can('project_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.projects.edit', $project->id) }}">
+                                        {{ trans('global.edit') }}
+                                    </a>
+                                @endcan
+                                @can('project_delete')
+                                    <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                    </form>
+                                @endcan
+                            </td>
+
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 @endsection
@@ -40,14 +71,14 @@
 @parent
 <script>
     $(function () {
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
+  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.projects.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
-          return entry.id
+      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
+          return $(entry).data('entry-id')
       });
 
       if (ids.length === 0) {
@@ -66,30 +97,13 @@
       }
     }
   }
-
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('project_delete')
   dtButtons.push(deleteButton)
 @endcan
 
-  let dtOverrideGlobals = {
-    buttons: dtButtons,
-    processing: true,
-    serverSide: true,
-    retrieve: true,
-    aaSorting: [],
-    ajax: "{{ route('admin.projects.index') }}",
-    columns: [
-      { data: 'placeholder', name: 'placeholder' },
-      { data: 'title', name: 'title' },
-{ data: 'visibility', name: 'visibility' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
-    ],
-  };
-
-  $('.datatable').DataTable(dtOverrideGlobals);
-
-});
+  $('.datatable:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+})
 
 </script>
 @endsection

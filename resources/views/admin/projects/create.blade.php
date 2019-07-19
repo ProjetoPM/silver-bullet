@@ -22,7 +22,7 @@
                 </p>
             </div>
             <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                <label for="description">{{ trans('cruds.project.fields.description') }}*</label>
+                <label for="description">{{ trans('cruds.project.fields.description') }}</label>
                 <textarea id="description" name="description" class="form-control ckeditor">{{ old('description', isset($project) ? $project->description : '') }}</textarea>
                 @if($errors->has('description'))
                     <em class="invalid-feedback">
@@ -44,20 +44,6 @@
                 <p class="helper-block">
                     {{ trans('cruds.project.fields.objectives_helper') }}
                 </p>
-            </div>
-            <div class="form-group {{ $errors->has('visibility') ? 'has-error' : '' }}">
-                <label>{{ trans('cruds.project.fields.visibility') }}*</label>
-                @foreach(App\Project::VISIBILITY_RADIO as $key => $label)
-                    <div>
-                        <input id="visibility_{{ $key }}" name="visibility" type="radio" value="{{ $key }}" {{ old('visibility', null) === (string)$key ? 'checked' : '' }} required>
-                        <label for="visibility_{{ $key }}">{{ $label }}</label>
-                    </div>
-                @endforeach
-                @if($errors->has('visibility'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('visibility') }}
-                    </em>
-                @endif
             </div>
             <div>
                 <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">

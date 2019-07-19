@@ -17,24 +17,12 @@ class Project extends Model
         'deleted_at',
     ];
 
-    const VISIBILITY_RADIO = [
-        '0' => 'Público',
-        '1' => 'Privado',
-    ];
-
     protected $fillable = [
         'title',
         'objectives',
-        'visibility',
-        'created_by',
         'created_at',
         'updated_at',
         'deleted_at',
         'description',
     ];
-
-    public function user()
-    {
-        return $this->belongsToMany(Project::class, 'users')->withTimestamps();
-    }
 }

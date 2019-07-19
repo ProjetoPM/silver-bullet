@@ -7,50 +7,16 @@ use App\Http\Requests\MassDestroyProjectRequest;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Project;
-use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Auth;
-
-
 
 class ProjectController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->ajax()) {
-            $query = Project::query()->select('*');
+        abort_unless(\Gate::allows('project_access'), 403);
 
-            $table = Datatables::of($query);
+        $projects = Project::all();
 
-            $table->addColumn('placeholder', '&nbsp;');
-            $table->addColumn('actions', '&nbsp;');
-
-            $table->editColumn('actions', function ($row) {
-                $viewGate      = 'project_show';
-                $editGate      = 'project_edit';
-                $deleteGate    = 'project_delete';
-                $crudRoutePart = 'projects';
-
-                return view('partials.datatablesActions', compact(
-                    'viewGate',
-                    'editGate',
-                    'deleteGate',
-                    'crudRoutePart',
-                    'row'
-                ));
-            });
-            $table->editColumn('title', function ($row) {
-                return $row->title ? $row->title : "";
-            });
-            $table->editColumn('description', function ($row) {
-                return $row->description ? $row->title : "";
-            });
-            $table->rawColumns(['actions', 'placeholder']);
-
-            return $table->make(true);
-        }
-
-        return view('admin.projects.index');
+        return view('admin.projects.index', compact('projects'));
     }
 
     public function create()
@@ -63,7 +29,7 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         abort_unless(\Gate::allows('project_create'), 403);
-        $request['created_by'] = Auth::id();
+
         $project = Project::create($request->all());
 
         return redirect()->route('admin.projects.index');
