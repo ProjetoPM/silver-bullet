@@ -25,7 +25,7 @@
                         {{ trans('cruds.project.fields.title') }}
                     </th>
                     <th>
-                        {{ trans('cruds.project.fields.visibility') }}
+                        {{ trans('cruds.project.fields.description') }}
                     </th>
                     <th>
                         &nbsp;

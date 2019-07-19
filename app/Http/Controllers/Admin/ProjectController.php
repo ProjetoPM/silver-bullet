@@ -42,8 +42,8 @@ class ProjectController extends Controller
             $table->editColumn('title', function ($row) {
                 return $row->title ? $row->title : "";
             });
-            $table->editColumn('visibility', function ($row) {
-                return $row->visibility ? Project::VISIBILITY_RADIO[$row->visibility] : '';
+            $table->editColumn('description', function ($row) {
+                return $row->description ? $row->title : "";
             });
             $table->rawColumns(['actions', 'placeholder']);
 
